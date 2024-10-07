@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notification</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            background: rgba(255, 255, 255, 0);
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+        .notification {
+            position: absolute;
+            top: 10%;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 20px 40px;
+            border-radius: 10px;
+            font-size: 18px;
+            text-align: center;
+            box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.1);
+            display: none;
+            opacity: 0;
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+        .success {
+            background-color: #dff0d8;
+            color: #3c763d;
+        }
+        .error {
+            background-color: #f2dede;
+            color: #a94442;
+        }
+        .warning {
+            background-color: #fcf8e3;
+            color: #8a6d3b;
+        }
+        .notification i {
+            margin-right: 10px;
+        }
+        .show {
+            display: block;
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+    </style>
+</head>
+<body>
+    <div id="notification" class="notification"></div>
+
+    <script>
+        window.addEventListener('message', function(event) {
+            if (event.data.action === "showNotification") {
+                let notification = document.getElementById('notification');
+                
+                notification.className = 'notification';
+                
+                if (event.data.type === "success") {
+                    notification.classList.add('success');
+                    notification.innerHTML = '<i class="fas fa-check-circle"></i>' + event.data.message;
+                } else if (event.data.type === "error") {
+                    notification.classList.add('error');
+                    notification.innerHTML = '<i class="fas fa-times-circle"></i>' + event.data.message;
+                } else if (event.data.type === "warning") {
+                    notification.classList.add('warning');
+                    notification.innerHTML = '<i class="fas fa-exclamation-triangle"></i>' + event.data.message;
+                }
+
+                notification.classList.add('show');
+
+                setTimeout(function() {
+                    notification.classList.remove('show');
+                }, 3000);
+            }
+        });
+    </script>
+</body>
+</html>
