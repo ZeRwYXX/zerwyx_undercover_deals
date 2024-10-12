@@ -93,9 +93,17 @@ function StartSelling(playerPed, drug)
     selling = true
 
     ESX.TriggerServerCallback('sell_drugs:getPlayerInventory', function(inventory)
-        local playerItem = GetItemFromInventory(inventory, drug.name)
+        local drugToSell = nil
 
-        if playerItem then
+        -- Recherche la première drogue trouvée dans l'inventaire du joueur
+        for _, drug in ipairs(Config.Drugs) do
+            if GetItemFromInventory(inventory, drug.name) then
+                drugToSell = drug
+                break 
+            end
+        end
+
+        if drugToSell then
             local pedCoords = GetEntityCoords(playerPed)
             local spawnCoords = GetRandomSpawnPoint(pedCoords, Config.SpawnRadius)
 
@@ -141,7 +149,7 @@ function StartSelling(playerPed, drug)
                             icon = "fas fa-cannabis",
                             onSelect = function()
                                 StartSellingAnimation(currentPed)
-                                SellDrug(drug)
+                                SellDrug(drugToSell)
                             end,
                             canInteract = function(entity)
                                 return true
@@ -174,7 +182,7 @@ function StartSelling(playerPed, drug)
                                         selling = false
                                         RemoveBlip(currentBlip)
                                     else
-                                        SellDrug(drug)
+                                        SellDrug(drugToSell)
                                     end
 
                                     break
@@ -189,10 +197,11 @@ function StartSelling(playerPed, drug)
                 SendNotification("Impossible de trouver un point de spawn valide.", "error")
             end
         else
-            SendNotification("Vous n'avez plus de drogue sur vous.", "error")
+            SendNotification("Vous n'avez pas de drogue sur vous.", "warning")
         end
     end)
 end
+
 
 function GetRandomSpawnPoint(playerCoords, radius)
     local attempts = 0
