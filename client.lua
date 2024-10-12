@@ -95,7 +95,6 @@ function StartSelling(playerPed, drug)
     ESX.TriggerServerCallback('sell_drugs:getPlayerInventory', function(inventory)
         local drugToSell = nil
 
-        -- Recherche la première drogue trouvée dans l'inventaire du joueur
         for _, drug in ipairs(Config.Drugs) do
             if GetItemFromInventory(inventory, drug.name) then
                 drugToSell = drug
